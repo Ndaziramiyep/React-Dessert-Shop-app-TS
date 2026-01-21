@@ -1,26 +1,6 @@
-import { useState } from 'react'
-import './App.css'
-import DessertCard from './components/DessertCard'
-import Cart from './components/Cart'
+import { Dessert } from './types';
 
-interface Dessert {
-  id: number;
-  name: string;
-  category: string;
-  price: number;
-  image: {
-    thumbnail: string;
-    mobile: string;
-    tablet: string;
-    desktop: string;
-  };
-}
-
-interface CartItem extends Dessert {
-  quantity: number;
-}
-
-const desserts: Dessert[] = [
+export const desserts: Dessert[] = [
   {
     id: 1,
     name: "Waffle with Berries",
@@ -129,85 +109,4 @@ const desserts: Dessert[] = [
       desktop: "./assets/images/image-panna-cotta-desktop.jpg"
     }
   }
-]
-
-function App() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([])
-
-  const addToCart = (dessert: Dessert) => {
-    setCartItems(prev => {
-      const existing = prev.find(item => item.id === dessert.id)
-      if (existing) {
-        return prev.map(item => 
-          item.id === dessert.id 
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        )
-      }
-      return [...prev, { ...dessert, quantity: 1 }]
-    })
-  }
-
-  const incrementQuantity = (id: number) => {
-    setCartItems(prev => 
-      prev.map(item => 
-        item.id === id 
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      )
-    )
-  }
-
-  const decrementQuantity = (id: number) => {
-    setCartItems(prev => 
-      prev.map(item => 
-        item.id === id && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      ).filter(item => item.quantity > 0)
-    )
-  }
-
-  const removeItem = (id: number) => {
-    setCartItems(prev => prev.filter(item => item.id !== id))
-  }
-
-  const confirmOrder = () => {
-    alert('Order confirmed!')
-    setCartItems([])
-  }
-
-  const getQuantity = (id: number) => {
-    const item = cartItems.find(item => item.id === id)
-    return item ? item.quantity : 0
-  }
-
-  return (
-    <div className="app">
-      <main className="main-content">
-        <h1>Desserts</h1>
-        <div className="desserts-grid">
-          {desserts.map(dessert => (
-            <DessertCard
-              key={dessert.id}
-              dessert={dessert}
-              quantity={getQuantity(dessert.id)}
-              onAddToCart={addToCart}
-              onIncrement={incrementQuantity}
-              onDecrement={decrementQuantity}
-            />
-          ))}
-        </div>
-      </main>
-      <aside className="sidebar">
-        <Cart
-          cartItems={cartItems}
-          onRemoveItem={removeItem}
-          onConfirmOrder={confirmOrder}
-        />
-      </aside>
-    </div>
-  )
-}
-
-export default App
+];
