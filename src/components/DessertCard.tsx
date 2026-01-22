@@ -1,17 +1,9 @@
 import React from 'react';
-
-interface Dessert {
-  id: number;
-  name: string;
-  category: string;
-  price: number;
-  image: {
-    thumbnail: string;
-    mobile: string;
-    tablet: string;
-    desktop: string;
-  };
-}
+import type { Dessert } from '../types/Dessert';
+import DessertImage from './DessertImage';
+import AddToCartButton from './AddToCartButton';
+import QuantityControls from './QuantityControls';
+import DessertInfo from './DessertInfo';
 
 interface DessertCardProps {
   dessert: Dessert;
@@ -31,42 +23,19 @@ const DessertCard: React.FC<DessertCardProps> = ({
   return (
     <div className="dessert-card">
       <div className="dessert-image-container">
-        <img 
-          src={dessert.image.desktop} 
-          alt={dessert.name}
-          className={`dessert-image ${quantity > 0 ? 'selected' : ''}`}
-        />
+        <DessertImage dessert={dessert} isSelected={quantity > 0} />
         {quantity === 0 ? (
-          <button 
-            className="add-to-cart-btn"
-            onClick={() => onAddToCart(dessert)}
-          >
-            <img src="./assets/images/icon-add-to-cart.svg" alt="" />
-            Add to Cart
-          </button>
+          <AddToCartButton dessert={dessert} onAddToCart={onAddToCart} />
         ) : (
-          <div className="quantity-controls">
-            <button 
-              className="quantity-btn"
-              onClick={() => onDecrement(dessert.id)}
-            >
-              <img src="./assets/images/icon-decrement-quantity.svg" alt="Decrease" />
-            </button>
-            <span className="quantity">{quantity}</span>
-            <button 
-              className="quantity-btn"
-              onClick={() => onIncrement(dessert.id)}
-            >
-              <img src="./assets/images/icon-increment-quantity.svg" alt="Increase" />
-            </button>
-          </div>
+          <QuantityControls 
+            quantity={quantity}
+            dessertId={dessert.id}
+            onIncrement={onIncrement}
+            onDecrement={onDecrement}
+          />
         )}
       </div>
-      <div className="dessert-info">
-        <p className="dessert-category">{dessert.category}</p>
-        <h3 className="dessert-name">{dessert.name}</h3>
-        <p className="dessert-price">${dessert.price.toFixed(2)}</p>
-      </div>
+      <DessertInfo dessert={dessert} />
     </div>
   );
 };
